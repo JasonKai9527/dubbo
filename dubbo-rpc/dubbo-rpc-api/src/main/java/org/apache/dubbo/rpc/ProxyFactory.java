@@ -31,7 +31,7 @@ public interface ProxyFactory {
     /**
      * create proxy.
      *
-     * @param invoker
+     * @param invoker 对外发起调用
      * @return proxy
      */
     @Adaptive({PROXY_KEY})
@@ -40,7 +40,7 @@ public interface ProxyFactory {
     /**
      * create proxy.
      *
-     * @param invoker
+     * @param invoker 对外发起调用
      * @return proxy
      */
     @Adaptive({PROXY_KEY})
@@ -53,7 +53,7 @@ public interface ProxyFactory {
      * @param proxy
      * @param type
      * @param url
-     * @return invoker
+     * @return invoker 对内发起调用
      */
     @Adaptive({PROXY_KEY})
     <T> Invoker<T> getInvoker(T proxy, Class<T> type, URL url) throws RpcException;

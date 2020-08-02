@@ -51,6 +51,7 @@ public abstract class AbstractProxyFactory implements ProxyFactory {
         Set<Class<?>> interfaces = new HashSet<>();
 
         String config = invoker.getUrl().getParameter(INTERFACES);
+        // 获取接口列表
         if (config != null && config.length() > 0) {
             String[] types = COMMA_SPLIT_PATTERN.split(config);
             for (String type : types) {
@@ -58,7 +59,7 @@ public abstract class AbstractProxyFactory implements ProxyFactory {
                 interfaces.add(ReflectUtils.forName(type));
             }
         }
-
+        // 为 http 和 hessian 协议提供泛化调用支持
         if (generic) {
             if (!GenericService.class.isAssignableFrom(invoker.getInterface())) {
                 interfaces.add(com.alibaba.dubbo.rpc.service.GenericService.class);

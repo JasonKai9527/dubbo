@@ -84,9 +84,12 @@ public class NettyServer extends AbstractServer implements RemotingServer {
      */
     @Override
     protected void doOpen() throws Throwable {
+        // 创建 ServerBootstrap
         bootstrap = new ServerBootstrap();
-
+        // 创建 boss 和 worker 线程池
+        // 主线程组： 接收客户端连接
         bossGroup = NettyEventLoopFactory.eventLoopGroup(1, "NettyServerBoss");
+        // 工作线程组：网络操作 工作线程
         workerGroup = NettyEventLoopFactory.eventLoopGroup(
                 getUrl().getPositiveParameter(IO_THREADS_KEY, Constants.DEFAULT_IO_THREADS),
                 "NettyServerWorker");
@@ -95,10 +98,12 @@ public class NettyServer extends AbstractServer implements RemotingServer {
         channels = nettyServerHandler.getChannels();
 
         bootstrap.group(bossGroup, workerGroup)
+                // 服务器通道：EpollServerSocketChannel或者NioServerSocketChannel
                 .channel(NettyEventLoopFactory.serverSocketChannelClass())
                 .option(ChannelOption.SO_REUSEADDR, Boolean.TRUE)
                 .childOption(ChannelOption.TCP_NODELAY, Boolean.TRUE)
                 .childOption(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)
+                // 表示一个新的连接进来之后处理逻辑
                 .childHandler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     protected void initChannel(SocketChannel ch) throws Exception {
@@ -117,6 +122,7 @@ public class NettyServer extends AbstractServer implements RemotingServer {
                     }
                 });
         // bind
+        // 绑定到指定的 ip 和端口上
         ChannelFuture channelFuture = bootstrap.bind(getBindAddress());
         channelFuture.syncUninterruptibly();
         channel = channelFuture.channel();

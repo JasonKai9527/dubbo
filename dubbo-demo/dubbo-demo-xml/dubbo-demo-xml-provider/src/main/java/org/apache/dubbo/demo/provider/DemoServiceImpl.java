@@ -35,6 +35,10 @@ public class DemoServiceImpl implements DemoService {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        boolean b = true;
+        while (b) {
+            throw new DemoException("test");
+        }
         return "Hello " + name + ", response from provider: " + RpcContext.getContext().getLocalAddress();
     }
 
